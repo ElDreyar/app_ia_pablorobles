@@ -1,63 +1,414 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>Mi primera web</title>
-    </head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f3e9">
+<title>Cuentaluz · Leer, jugar y comprender</title>
+<style>
+:root{
+  --paper:#F7F3E9; --surface:#FFFDF8; --ink:#29323A; --muted:#667078;
+  --plum:#663A70; --plum-dark:#4E2858; --coral:#D96852;
+  --teal:#55B9A9; --teal-dark:#176F68; --yellow:#F2CB65;
+  --lavender:#E9DDEB; --peach:#F2DFD5; --mint:#DDEFE6;
+  --line:#E7DED0; --shadow:0 14px 34px rgba(67,49,43,.10);
+  --font-size:1.22rem; --line-height:1.85; --letter-spacing:.025em;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Verdana,sans-serif}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:4px solid var(--yellow);outline-offset:3px}
+.app-shell{min-height:100vh;max-width:1180px;margin:auto;padding:18px 24px 28px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.brand{border:0;background:none;color:var(--plum);font-size:1.85rem;font-weight:900;letter-spacing:-.07em;line-height:1}
+.brand span{color:var(--coral)}
+.top-actions{display:flex;gap:9px;align-items:center}
+.icon-btn,.soft-btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:15px;padding:10px 14px;font-weight:700}
+.icon-btn{min-width:44px;min-height:44px}
+.soft-btn:hover,.icon-btn:hover{background:#fff}
+.primary-btn{border:0;border-radius:16px;padding:13px 20px;background:var(--plum);color:white;font-weight:800;box-shadow:0 5px 0 var(--plum-dark);transition:transform .15s,box-shadow .15s}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--plum-dark)}
+.primary-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--plum-dark)}
+.secondary-btn{border:0;border-radius:15px;padding:12px 18px;background:var(--mint);color:#245A4D;font-weight:800}
+.eyebrow{color:var(--teal-dark);font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.08;letter-spacing:-.045em;margin:8px 0 12px}
+h2{font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.035em;margin-bottom:8px}
+h3{font-size:1.2rem}
+.lead{color:var(--muted);font-size:1.05rem;line-height:1.65;max-width:650px}
+.screen{display:none;animation:fadeUp .35s ease both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.home-hero{padding:30px clamp(20px,5vw,54px);border-radius:30px;background:var(--lavender);position:relative;overflow:hidden;margin-bottom:30px}
+.home-hero:after{content:"✦";position:absolute;right:7%;top:10%;font-size:5rem;color:#fff7;transform:rotate(12deg)}
+.home-hero .lead{max-width:570px}
+.section-heading{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:24px 0 14px}
+.story-rail{display:flex;gap:18px;overflow-x:auto;padding:5px 3px 22px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.story-card{flex:0 0 230px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:12px;text-align:left;box-shadow:0 7px 18px rgba(67,49,43,.06);color:var(--ink);transition:transform .18s,box-shadow .18s}
+.story-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.story-art{height:150px;border-radius:16px;display:grid;place-items:center;overflow:hidden;position:relative}
+.story-art svg{width:100%;height:100%}
+.story-card h3{margin:12px 4px 5px;color:var(--plum);font-size:1.15rem}
+.story-card p{margin:0 4px 5px;color:var(--muted);font-size:.9rem;line-height:1.5}
+.story-meta{margin:10px 4px 2px;color:var(--teal-dark);font-size:.78rem;font-weight:800}
+.home-bottom{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:17px 20px;background:var(--mint);border-radius:20px}
+.home-bottom p{margin:0;color:#31594F}
+.bottom-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:30px;padding-top:15px;border-top:1px solid var(--line)}
+.nav-btn{background:transparent;border:0;color:var(--muted);font-weight:800;padding:10px}
+.nav-btn:hover{color:var(--plum)}
+.progress-dots{display:flex;gap:6px;justify-content:center}
+.progress-dots span{width:8px;height:8px;border-radius:50%;background:#D8D0C6}
+.progress-dots span.on{background:var(--coral);width:22px;border-radius:9px}
+.intro-layout{max-width:850px;margin:20px auto;text-align:center}
+.intro-art{max-width:540px;margin:24px auto 18px;border-radius:28px;overflow:hidden;box-shadow:var(--shadow);background:var(--peach);height:300px}
+.intro-art svg{width:100%;height:100%}
+.intro-title{display:inline-block;position:relative;margin-top:-38px;background:var(--surface);padding:14px 28px;border-radius:18px;box-shadow:var(--shadow);color:var(--plum)}
+.intro-title h1{font-size:clamp(2rem,5vw,3.4rem);margin:0}
+.reader-wrap{max-width:820px;margin:auto}
+.reader-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.reader-page{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:clamp(24px,5vw,52px);min-height:390px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.reader-page:before{content:"";position:absolute;left:0;top:0;bottom:0;width:9px;background:var(--teal)}
+.reader-page h2{color:var(--plum);font-size:1.45rem;margin-bottom:20px}
+.reading-text{font-size:var(--font-size);line-height:var(--line-height);letter-spacing:var(--letter-spacing);max-width:650px;margin:auto;color:#26343A}
+.reading-text p{margin:0 0 1.05em}
+.reader-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:17px}
+.reader-controls .page-count{font-weight:800;color:var(--muted);font-size:.9rem}
+.reader-tools{display:flex;gap:8px;flex-wrap:wrap}
+.tool-btn{border:1px solid var(--line);background:var(--surface);border-radius:13px;padding:9px 12px;color:var(--ink);font-weight:700}
+.tool-btn[aria-pressed="true"]{background:var(--mint);border-color:var(--teal)}
+.quiz-wrap{max-width:850px;margin:auto}
+.quiz-question{background:var(--peach);border-radius:22px;padding:20px 24px;margin:18px 0}
+.quiz-question h2{color:#7E4137;font-size:clamp(1.35rem,3vw,1.9rem);margin:5px 0}
+.quote-card{background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--teal);border-radius:18px;padding:20px 24px;font-size:1.12rem;line-height:1.65;box-shadow:0 7px 18px rgba(67,49,43,.05);margin:16px 0}
+.drop-zone{min-height:72px;border:3px dashed #9BCFC2;border-radius:17px;background:#F0F8F3;display:flex;align-items:center;justify-content:center;padding:12px;text-align:center;color:#47766C;font-weight:800;margin:14px 0}
+.drop-zone.filled{border-style:solid;background:var(--mint);color:#245A4D}
+.choice-list{display:grid;gap:12px;margin:18px 0}
+.choice{border:2px solid var(--line);background:var(--surface);border-radius:17px;padding:15px 18px;text-align:left;font-weight:700;color:var(--ink);line-height:1.45}
+.choice:hover{border-color:var(--teal)}
+.choice.selected{border-color:var(--teal-dark);background:var(--mint)}
+.choice.correct{border-color:#3A9B70;background:#E1F4E9}
+.choice.wrong{border-color:#D96852;background:#FBE9E3}
+.draggable-list{display:grid;gap:10px;margin:15px 0}
+.draggable{border:2px solid var(--line);border-radius:15px;background:white;padding:13px 16px;display:flex;align-items:center;gap:12px;cursor:grab;font-weight:700;line-height:1.45}
+.draggable:active{cursor:grabbing}
+.drag-handle{color:var(--teal-dark);font-size:1.3rem}
+.sequence-slots{display:grid;gap:10px;margin:16px 0}
+.sequence-slot{border:2px dashed #BBAFC0;border-radius:15px;min-height:65px;padding:10px;display:flex;gap:10px;align-items:center;background:#FBF8FC}
+.sequence-slot strong{color:var(--plum);min-width:75px}
+.feedback{min-height:28px;font-weight:800;margin:12px 0;color:var(--teal-dark)}
+.feedback.error{color:#A94E40}
+.quiz-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.about-card{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:clamp(22px,5vw,42px);box-shadow:var(--shadow);max-width:850px;margin:20px auto}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.about-point{background:var(--mint);padding:17px;border-radius:18px}
+.about-point:nth-child(2){background:var(--lavender)}
+.about-point:nth-child(3){background:var(--peach)}
+.about-point h3{margin-bottom:7px;color:var(--plum)}
+.about-point p{font-size:.92rem;line-height:1.5;margin:0}
+.settings-panel{position:fixed;z-index:10;right:20px;top:75px;width:min(340px,calc(100vw - 40px));background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 18px 50px #29232330;display:none}
+.settings-panel.open{display:block}
+.settings-panel h3{margin:0 0 14px;color:var(--plum)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:13px 0}
+.setting-row label{font-weight:700;font-size:.92rem}
+.setting-row input[type=range]{width:130px;accent-color:var(--plum)}
+.setting-row select{max-width:145px;padding:8px;border:1px solid var(--line);border-radius:10px;background:white}
+.toggle{display:flex;align-items:center;gap:8px}
+.small-note{font-size:.82rem;color:var(--muted);line-height:1.5}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#29323A;color:white;padding:12px 18px;border-radius:14px;box-shadow:var(--shadow);z-index:20;display:none;max-width:90vw;text-align:center}
+.toast.show{display:block;animation:fadeUp .2s ease}
+@media(max-width:650px){
+ .app-shell{padding:14px 14px 22px}.topbar{margin-bottom:15px}.brand{font-size:1.6rem}
+ .home-hero{padding:24px 20px;border-radius:23px}.story-card{flex-basis:205px}.story-art{height:132px}
+ .reader-page{min-height:420px;padding:28px 22px}.reader-page:before{width:6px}
+ .reader-controls{flex-wrap:wrap}.reader-controls>div{width:100%;display:flex;justify-content:space-between}
+ .about-grid{grid-template-columns:1fr}.intro-art{height:230px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+body.dyslexia-mode{--font-size:1.3rem;--line-height:2.05;--letter-spacing:.045em}
+body.dyslexia-mode .reading-text{font-family:Arial,Verdana,sans-serif}
+body.high-contrast{--paper:#fff;--surface:#fff;--ink:#111;--muted:#333;--line:#777;--plum:#482052;--teal-dark:#07584F}
+</style>
+</head>
 <body>
-    <heADER></heADER>
-    <img src="https://imgs.search.brave.com/rvhhRXMtsf_362KTSXEa2vJYjqBpCI5yCJcKKQqvOyY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YW5pcGVkaWEubmV0/L2ltYWdlbmVzL2Zv/Y2FzLWdyaXNlcy0y/NTB4MTUwLmpwZw" alt="Logode mi dreyarvisuals" width="250 height">
-    <h1>focas mexicanas
+<div class="app-shell">
+  <header class="topbar">
+    <button class="brand" onclick="go('home')" aria-label="Cuentaluz, inicio">cuenta<span>luz</span>.</button>
+    <div class="top-actions">
+      <button class="soft-btn" onclick="toggleSettings()" aria-expanded="false" id="settingsButton">Aa <span class="hide-mobile">Lectura</span></button>
+    </div>
+  </header>
 
-        <nav>
-            <a href="https://google.es">Google</a>
-        </nav>
-    </h1>
-    
-    <main>
-        <div>Solo se usa cuando no hay otra etiqueta disponible para agrupar.</div>
-        <!--componente HERO  -->
-        <div>
-            <h2> Unete a nuestra lucha</h2>
-            <img src="https://imgs.search.brave.com/B1wmn7DiY2uis9DJfI3PQtc4vjk7t_-X89nxoMT9GS0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS50ZW5vci5jb20v/V0FjRHhhOU5KYlVB/QUFBTS9pbmVmYWJs/ZWp1bHktbmlrby10/aGUtc2VhbC13aXRo/LXRlYXJ5LWV5ZXMt/ZWRpdGVkLXdpdGgt/aGVhcnRzLmdpZg.gif" alt="gif de foca con corazones">
+  <main>
+    <section id="home" class="screen active" aria-labelledby="homeTitle">
+      <div class="home-hero">
+        <div class="eyebrow">Un cuento, mil maneras de entender</div>
+        <h1 id="homeTitle">¡Hoy toca una<br>nueva aventura!</h1>
+        <p class="lead">Elige una historia, léela a tu ritmo y juega a reconstruirla. Cada página es una pequeña aventura.</p>
+      </div>
+      <div class="section-heading">
+        <div><div class="eyebrow">Nuestra biblioteca</div><h2>¿Qué te apetece leer?</h2></div>
+        <span class="small-note">Desliza para descubrir →</span>
+      </div>
+      <div class="story-rail" aria-label="Cuentos disponibles">
+        <button class="story-card" onclick="selectStory('luna')">
+          <div class="story-art">
+            <svg viewBox="0 0 240 150" role="img" aria-label="Una luna sonriente sobre un bosque"><rect width="240" height="150" fill="#DCDCF0"/><circle cx="166" cy="43" r="28" fill="#F6D77A"/><circle cx="177" cy="34" r="26" fill="#DCDCF0"/><path d="M0 120 Q50 70 105 125 T240 108 V150 H0" fill="#668F7B"/><path d="M25 132 L45 53 L65 132 M58 132 L80 72 L102 132 M170 135 L190 65 L212 135" fill="#426B5B"/><circle cx="55" cy="40" r="3" fill="#fff"/><circle cx="110" cy="27" r="2" fill="#fff"/></svg>
+          </div>
+          <h3>La luna curiosa</h3><p>Una luna inquieta quiere descubrir qué hay más allá del bosque.</p><div class="story-meta">FÁCIL · 5 PÁGINAS</div>
+        </button>
+        <button class="story-card" onclick="selectStory('zorro')">
+          <div class="story-art">
+            <svg viewBox="0 0 240 150" role="img" aria-label="Un zorro naranja en un campo"><rect width="240" height="150" fill="#F5DCCB"/><circle cx="190" cy="30" r="18" fill="#F1C45E"/><path d="M0 115 Q65 80 125 115 T240 100 V150 H0" fill="#8CB69A"/><path d="M64 98 L80 42 L111 75 L142 42 L154 104 Q110 139 64 98" fill="#D87543"/><path d="M82 63 L87 42 L102 69 M130 68 L144 43 L145 77" fill="#F4E5C8"/><ellipse cx="111" cy="102" rx="29" ry="24" fill="#F4E5C8"/><circle cx="99" cy="91" r="3" fill="#29323A"/><circle cx="125" cy="91" r="3" fill="#29323A"/><path d="M108 103 l7 0 -3 5z" fill="#29323A"/></svg>
+          </div>
+          <h3>El zorro y las estrellas</h3><p>Un pequeño zorro busca la estrella que ha perdido su brillo.</p><div class="story-meta">MEDIO · 6 PÁGINAS</div>
+        </button>
+        <button class="story-card" onclick="selectStory('barco')">
+          <div class="story-art">
+            <svg viewBox="0 0 240 150" role="img" aria-label="Un barco de papel en el mar"><rect width="240" height="150" fill="#D7E9E9"/><circle cx="45" cy="34" r="18" fill="#F4CE73"/><path d="M0 105 Q45 85 90 105 T180 105 T270 105 V150 H0" fill="#64B7B0"/><path d="M58 94 L120 34 L120 94Z" fill="#FFF9E9"/><path d="M125 94 L125 53 L170 94Z" fill="#D87543"/><path d="M45 98 Q118 119 185 98 L169 121 H65Z" fill="#76516F"/><path d="M0 130 Q50 116 100 130 T200 130 T300 130" stroke="#EAF7F4" stroke-width="4" fill="none"/></svg>
+          </div>
+          <h3>El barco de papel</h3><p>Una pequeña barca navega por un río lleno de sorpresas.</p><div class="story-meta">FÁCIL · 4 PÁGINAS</div>
+        </button>
+        <button class="story-card" onclick="selectStory('semilla')">
+          <div class="story-art">
+            <svg viewBox="0 0 240 150" role="img" aria-label="Una semilla que se convierte en flor"><rect width="240" height="150" fill="#E8E4D5"/><circle cx="120" cy="65" r="20" fill="#F1C45E"/><g fill="#D98283"><ellipse cx="120" cy="35" rx="12" ry="23"/><ellipse cx="120" cy="95" rx="12" ry="23"/><ellipse cx="90" cy="65" rx="23" ry="12"/><ellipse cx="150" cy="65" rx="23" ry="12"/></g><path d="M120 86 V145" stroke="#4D8A67" stroke-width="8"/><path d="M120 119 Q80 95 72 123 Q100 139 120 119 M120 132 Q151 106 169 127 Q147 145 120 132" fill="#72A77E"/></svg>
+          </div>
+          <h3>La semilla viajera</h3><p>Una semilla descubre que los cambios también pueden ser aventuras.</p><div class="story-meta">MEDIO · 6 PÁGINAS</div>
+        </button>
+      </div>
+      <div class="home-bottom">
+        <p><strong>¿Quieres saber por qué existe Cuentaluz?</strong><br><span class="small-note">Descubre nuestra propuesta y cómo aprendemos jugando.</span></p>
+        <button class="secondary-btn" onclick="go('about')">Conoce el proyecto ↗</button>
+      </div>
+    </section>
 
-            <button>VOTA POR NOSOTRAS</button>
-            <!-- Candidatos en componentes Card -->
-            <section>
-                <h3>
-                CANDIDATOS
-                </h3>
-                <article>
-                    <header><h4>Petanzini</h4></header>
-                    <p>Deportaré a los leones marinos</p>
-                    <footer>a todos</footer>
-                    <img src="https://picsum.photos/id/684/600/400" alt="">
-                </article>
-                  <article>
-                    <header><h4>Jorgito Maldito</h4></header>
-                    <p>Deportaré a los leones marinos</p>
-                    <footer>a todos</footer>
-                    <img src="https://picsum.photos/id/684/600/400" alt="">
-                </article>
-                  <article>
-                    <header><h4>Foquenho Pepon</h4></header>
-                    <p>Deportaré a los leones marinos</p>
-                    <footer>a todos</footer>
-                    <img src="https://picsum.photos/id/684/600/400" alt="">
-                </article>
-            </section>
+    <section id="intro" class="screen">
+      <div class="intro-layout">
+        <div class="eyebrow">Tu próxima aventura</div>
+        <div class="intro-art" id="introArt"></div>
+        <div class="intro-title"><h1 id="introTitle">La luna curiosa</h1></div>
+        <p class="lead" id="introDescription" style="margin:22px auto">Una historia para leer sin prisa.</p>
+        <button class="primary-btn" onclick="startReading()">¡Vamos a leer!</button>
+      </div>
+    </section>
+
+    <section id="reader" class="screen">
+      <div class="reader-wrap">
+        <div class="reader-head"><div><div class="eyebrow">Tu cuento</div><h2 id="readerTitle">La luna curiosa</h2></div><button class="tool-btn" onclick="speakPage()" id="listenBtn">▶ Escuchar</button></div>
+        <div class="reader-page" id="readerPage" aria-live="polite">
+          <h2 id="pageHeading">Una noche diferente</h2>
+          <div class="reading-text" id="pageText"></div>
         </div>
-    </main>
-    <footer><hr><address>Foquipiños de la Frontera, s/n <br>
-    Ciudad de México <br>
-<a href="tlf:66676666">6676666</a> <br>
-<a href="mailto:focas@gmail.com">focas@gmail.com </a></address></footer>
-    
+        <div class="reader-controls">
+          <div><button class="tool-btn" onclick="previousPage()">← Anterior</button> <button class="primary-btn" onclick="nextPage()" id="nextPageBtn">Siguiente →</button></div>
+          <span class="page-count" id="pageCount">Página 1 de 5</span>
+        </div>
+        <div class="reader-tools" style="justify-content:center;margin-top:12px">
+          <span class="small-note">También puedes deslizar la página para avanzar o retroceder.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz1" class="screen">
+      <div class="quiz-wrap">
+        <div class="eyebrow">Reto 1 · Encuentra su lugar</div>
+        <div class="quiz-question"><h2>¿Dónde colocarías esta frase en la historia?</h2><p style="margin:0;color:#76534B">Lee las opciones y arrastra la frase hasta el lugar que creas correcto.</p></div>
+        <div class="quote-card" id="dragSentence">«La luna decidió bajar un poquito para verlo todo más de cerca».</div>
+        <div class="drop-zone" id="dropZone" ondragover="allowDrop(event)" ondrop="dropSentence(event)" tabindex="0" role="button" aria-label="Zona para colocar la frase">Suelta aquí la frase</div>
+        <div class="draggable-list"><div class="draggable" draggable="true" id="sentenceCard" ondragstart="dragSentence(event)" tabindex="0">⠿ «La luna decidió bajar un poquito para verlo todo más de cerca».</div></div>
+        <div class="quiz-actions"><button class="primary-btn" onclick="checkDrag()">Comprobar</button><button class="tool-btn" onclick="resetDrag()">Volver a intentarlo</button></div>
+        <p class="feedback" id="dragFeedback" aria-live="polite"></p>
+        <div class="quiz-actions"><button class="secondary-btn" onclick="go('quiz2')">Siguiente reto →</button></div>
+      </div>
+    </section>
+
+    <section id="quiz2" class="screen">
+      <div class="quiz-wrap">
+        <div class="eyebrow">Reto 2 · Palabras con pistas</div>
+        <div class="quiz-question"><h2>¿Qué significa la palabra «curiosa»?</h2><p style="margin:0;color:#76534B">Piensa en lo que hace la luna durante el cuento.</p></div>
+        <div class="quote-card">«La luna era muy curiosa. Cada noche miraba el bosque y se preguntaba qué habría al otro lado».</div>
+        <div class="choice-list" id="meaningChoices">
+          <button class="choice" onclick="chooseMeaning(this,false)">Que tiene mucho sueño y quiere descansar.</button>
+          <button class="choice" onclick="chooseMeaning(this,true)">Que tiene ganas de saber o descubrir cosas.</button>
+          <button class="choice" onclick="chooseMeaning(this,false)">Que está enfadada con todo el mundo.</button>
+        </div>
+        <p class="feedback" id="meaningFeedback" aria-live="polite"></p>
+        <div class="quiz-actions"><button class="secondary-btn" onclick="go('quiz3')">Siguiente reto →</button></div>
+      </div>
+    </section>
+
+    <section id="quiz3" class="screen">
+      <div class="quiz-wrap">
+        <div class="eyebrow">Reto 3 · Construye la historia</div>
+        <div class="quiz-question"><h2>Ordena los momentos del cuento</h2><p style="margin:0;color:#76534B">Coloca primero el inicio, después el nudo y, por último, el desenlace. Puedes usar las flechas para cambiar el orden.</p></div>
+        <div class="draggable-list" id="sequenceList"></div>
+        <div class="quiz-actions"><button class="tool-btn" onclick="moveSequence(-1)">↑ Subir</button><button class="tool-btn" onclick="moveSequence(1)">↓ Bajar</button><button class="primary-btn" onclick="checkSequence()">Comprobar orden</button></div>
+        <p class="small-note">Selecciona una tarjeta antes de usar las flechas.</p>
+        <p class="feedback" id="sequenceFeedback" aria-live="polite"></p>
+        <div class="quiz-actions"><button class="secondary-btn" onclick="finishStory()">Terminar cuento ✦</button></div>
+      </div>
+    </section>
+
+    <section id="complete" class="screen">
+      <div class="intro-layout">
+        <div class="eyebrow">¡Aventura completada!</div>
+        <div class="intro-art" style="height:230px;background:var(--mint);display:grid;place-items:center">
+          <svg viewBox="0 0 400 230" role="img" aria-label="Estrellas y confeti de celebración"><g fill="#F2CB65"><path d="M90 38 l9 24 25 1 -19 15 7 24 -22 -14 -21 14 7 -24 -19 -15 25 -1z"/><path d="M300 35 l7 18 19 1 -15 12 5 19 -16 -11 -16 11 5 -19 -15 -12 19 -1z"/></g><circle cx="200" cy="112" r="58" fill="#F4D67B"/><path d="M175 110 q25 28 50 0" stroke="#29323A" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="180" cy="92" r="5" fill="#29323A"/><circle cx="220" cy="92" r="5" fill="#29323A"/><path d="M65 170 l10 -20 10 20 -10 20z M315 170 l10 -20 10 20 -10 20z" fill="#D96852"/></svg>
+        </div>
+        <h1>¡Lo has conseguido!</h1>
+        <p class="lead" style="margin:0 auto 22px">Has leído, recordado y reconstruido una historia. Cada vez que lees, descubres algo nuevo.</p>
+        <button class="primary-btn" onclick="go('home')">Elegir otro cuento</button>
+      </div>
+    </section>
+
+    <section id="about" class="screen">
+      <div class="about-card">
+        <div class="eyebrow">Detrás de Cuentaluz</div>
+        <h1>Leer también puede ser jugar.</h1>
+        <p class="lead">Cuentaluz es una propuesta de aplicación infantil que busca fomentar la comprensión lectora a través de cuentos y pequeños retos interactivos. La lectura no termina al pasar la última página: empieza una nueva aventura cuando el niño reconstruye lo que ha entendido.</p>
+        <div class="about-grid">
+          <div class="about-point"><h3>La propuesta</h3><p>Una biblioteca de cuentos acompañada de actividades que ayudan a recordar, relacionar e interpretar lo leído.</p></div>
+          <div class="about-point"><h3>¿Qué la diferencia?</h3><p>No se limita a medir cuánto se lee. Propone jugar con la historia y comprobar su comprensión de distintas maneras.</p></div>
+          <div class="about-point"><h3>Diseño inclusivo</h3><p>Se priorizan la claridad, el ritmo propio, los apoyos opcionales y una experiencia accesible para niños con dislexia.</p></div>
+        </div>
+        <h2 style="margin-top:28px">Un diseño pensado para leer mejor</h2>
+        <p style="line-height:1.75;color:var(--muted)">La interfaz utiliza textos claros, alineación a la izquierda, espacios generosos, navegación predecible y controles sencillos. El niño puede ajustar el tamaño del texto, activar un modo de lectura con mayor espaciado y escuchar el contenido si lo necesita. Estas opciones son apoyos de accesibilidad, no una solución clínica ni un sustituto de la intervención educativa especializada.</p>
+        <button class="primary-btn" onclick="go('home')">Volver a la biblioteca</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button class="nav-btn" onclick="goBack()">← Atrás</button>
+    <div class="progress-dots" aria-label="Progreso de la actividad"><span id="dot1" class="on"></span><span id="dot2"></span><span id="dot3"></span><span id="dot4"></span><span id="dot5"></span><span id="dot6"></span></div>
+    <button class="nav-btn" onclick="go('home')">⌂ Inicio</button>
+  </nav>
+</div>
+
+<aside class="settings-panel" id="settingsPanel" aria-label="Ajustes de lectura">
+  <h3>Personaliza tu lectura</h3>
+  <div class="setting-row"><label for="fontRange">Tamaño de letra</label><input id="fontRange" type="range" min="18" max="28" value="20" oninput="setFontSize(this.value)"></div>
+  <div class="setting-row"><label for="spacingRange">Espacio entre líneas</label><input id="spacingRange" type="range" min="1.5" max="2.2" step=".1" value="1.85" oninput="setLineHeight(this.value)"></div>
+  <div class="setting-row"><label for="letterRange">Espacio entre letras</label><input id="letterRange" type="range" min="0" max=".08" step=".01" value=".025" oninput="setLetterSpacing(this.value)"></div>
+  <div class="setting-row"><label for="dyslexiaToggle">Lectura con más espacio</label><input id="dyslexiaToggle" type="checkbox" onchange="toggleDyslexia(this.checked)"></div>
+  <div class="setting-row"><label for="contrastToggle">Alto contraste</label><input id="contrastToggle" type="checkbox" onchange="toggleContrast(this.checked)"></div>
+  <p class="small-note">Puedes probar distintas opciones y elegir la que te resulte más cómoda. No hay una configuración única para todos.</p>
+  <button class="secondary-btn" onclick="toggleSettings()">Cerrar</button>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const stories={
+ luna:{
+  title:"La luna curiosa",description:"Una luna inquieta quiere descubrir qué hay más allá del bosque.",
+  art:`<svg viewBox="0 0 540 300" role="img" aria-label="La luna curiosa sobre un bosque"><rect width="540" height="300" fill="#DCDCF0"/><circle cx="370" cy="95" r="65" fill="#F6D77A"/><circle cx="393" cy="75" r="59" fill="#DCDCF0"/><path d="M0 235 Q100 155 220 235 T540 210 V300 H0" fill="#668F7B"/><path d="M35 300 L90 100 L150 300 M130 300 L195 145 L250 300 M350 300 L405 115 L470 300" fill="#426B5B"/><g fill="#fff"><circle cx="120" cy="60" r="4"/><circle cx="270" cy="40" r="3"/><circle cx="470" cy="65" r="4"/></g></svg>`,
+  pages:[
+   ["Una noche diferente","En lo alto del cielo vivía una luna pequeña y brillante. Cada noche iluminaba los tejados, los caminos y los árboles del bosque. Pero había algo que no la dejaba dormir: quería saber qué había al otro lado de aquel bosque tan grande."],
+   ["Una idea brillante","Una noche, la luna decidió bajar un poquito para verlo todo más de cerca. Se deslizó entre las nubes y llegó hasta las copas de los árboles. Desde allí escuchó un ruido suave: era un búho que buscaba su nido."],
+   ["Un encuentro inesperado","—¿Qué haces tan abajo? —preguntó el búho, sorprendido. La luna le contó que tenía mucha curiosidad por descubrir el bosque. El búho sonrió y le ofreció acompañarla por un sendero iluminado por luciérnagas."],
+   ["El secreto del bosque","Juntos encontraron un claro lleno de flores que solo se abrían por la noche. La luna comprendió que no necesitaba llegar al otro lado del bosque para descubrir algo maravilloso. A veces, lo importante estaba mucho más cerca."],
+   ["De vuelta a casa","Antes del amanecer, la luna regresó al cielo. Desde entonces siguió mirando el bosque cada noche, pero ya no tenía prisa. Había aprendido que cada pequeño descubrimiento podía convertirse en una gran aventura."]
+  ]
+ },
+ zorro:{
+  title:"El zorro y las estrellas",description:"Un pequeño zorro busca la estrella que ha perdido su brillo.",
+  art:`<svg viewBox="0 0 540 300"><rect width="540" height="300" fill="#F5DCCB"/><circle cx="430" cy="55" r="30" fill="#F1C45E"/><path d="M0 235 Q150 175 280 235 T540 220 V300 H0" fill="#8CB69A"/><path d="M100 215 L150 65 L240 150 L320 65 L365 220 Q230 300 100 215" fill="#D87543"/><path d="M145 115 L155 65 L205 125 M280 125 L320 65 L330 145" fill="#F4E5C8"/><ellipse cx="235" cy="210" rx="75" ry="58" fill="#F4E5C8"/><circle cx="200" cy="183" r="7" fill="#29323A"/><circle cx="267" cy="183" r="7" fill="#29323A"/></svg>`,
+  pages:[
+   ["Una luz que falta","En un bosque vivía un zorro que cada noche contaba las estrellas. Una tarde descubrió que una de ellas brillaba mucho menos que las demás."],
+   ["La búsqueda","El zorro decidió encontrarla. Preguntó al búho, que le indicó que mirase cerca del río, donde el agua reflejaba el cielo."],
+   ["Una pista","Junto al río encontró una pequeña piedra brillante. No era una estrella, pero reflejaba su luz. El zorro pensó que quizá la estrella necesitaba ayuda."],
+   ["La sorpresa","Subió a una colina y vio que una nube tapaba la estrella. Esperó con paciencia hasta que el viento apartó la nube."],
+   ["Todo vuelve a brillar","La estrella recuperó su brillo. El zorro volvió a casa contento: había aprendido que, a veces, solo hace falta esperar y mirar con atención."],
+   ["Una nueva costumbre","Desde aquella noche, el zorro no solo contaba estrellas: también se fijaba en las pequeñas cosas que ocurrían a su alrededor."]
+  ]
+ },
+ barco:{
+  title:"El barco de papel",description:"Una pequeña barca navega por un río lleno de sorpresas.",
+  art:`<svg viewBox="0 0 540 300"><rect width="540" height="300" fill="#D7E9E9"/><circle cx="90" cy="70" r="35" fill="#F4CE73"/><path d="M0 205 Q100 165 200 205 T400 205 T600 205 V300 H0" fill="#64B7B0"/><path d="M120 190 L260 55 L260 190Z" fill="#FFF9E9"/><path d="M270 190 L270 90 L390 190Z" fill="#D87543"/><path d="M90 195 Q250 245 430 195 L390 240 H145Z" fill="#76516F"/></svg>`,
+  pages:[
+   ["Un barco pequeño","Clara dobló una hoja de papel hasta convertirla en un barco. Lo dejó con cuidado sobre el río y lo vio alejarse despacito."],
+   ["La primera curva","El barco llegó a una curva donde el agua giraba más deprisa. Una hoja grande chocó con él y lo empujó hacia la orilla."],
+   ["Un amigo inesperado","Una rana vio el barco atrapado entre unas ramas. Con un salto, movió una rama y dejó libre el camino."],
+   ["El viaje continúa","El barco volvió a navegar. Pasó bajo un puente y siguió el curso del río hasta que el sol empezó a esconderse."]
+  ]
+ },
+ semilla:{
+  title:"La semilla viajera",description:"Una semilla descubre que los cambios también pueden ser aventuras.",
+  art:`<svg viewBox="0 0 540 300"><rect width="540" height="300" fill="#E8E4D5"/><circle cx="270" cy="110" r="38" fill="#F1C45E"/><g fill="#D98283"><ellipse cx="270" cy="53" rx="23" ry="43"/><ellipse cx="270" cy="167" rx="23" ry="43"/><ellipse cx="213" cy="110" rx="43" ry="23"/><ellipse cx="327" cy="110" rx="43" ry="23"/></g><path d="M270 150 V300" stroke="#4D8A67" stroke-width="13"/><path d="M270 225 Q175 165 155 230 Q220 275 270 225 M270 260 Q355 190 400 245 Q330 295 270 260" fill="#72A77E"/></svg>`,
+  pages:[
+   ["Una semilla inquieta","En un jardín vivía una semilla pequeña. Soñaba con conocer el mundo, aunque todavía no sabía cómo hacerlo."],
+   ["El viento la ayuda","Un día sopló un viento suave y la llevó hasta un rincón de tierra húmeda. Allí encontró un lugar tranquilo para descansar."],
+   ["Bajo la tierra","Pasaron varios días. La semilla empezó a abrirse y una raíz pequeña se hundió en la tierra para buscar agua."],
+   ["Un cambio sorprendente","Después apareció un tallo verde que creció hacia la luz. La semilla ya no era solo una semilla: se estaba convirtiendo en una planta."],
+   ["Una flor nueva","Con el tiempo nació una flor amarilla. La semilla comprendió que viajar también podía significar cambiar y crecer."],
+   ["El jardín se llena","La flor atrajo a una mariposa y el jardín pareció un lugar nuevo. La pequeña semilla había encontrado su manera de explorar."]
+  ]
+ }
+};
+let currentStory="luna", pageIndex=0, selectedSequence=0, dropped=false, meaningAnswered=false;
+const screens=["home","intro","reader","quiz1","quiz2","quiz3","complete","about"];
+const historyStack=["home"];
+function go(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ if(historyStack[historyStack.length-1]!==id)historyStack.push(id);
+ updateDots(id);
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function goBack(){if(historyStack.length>1){historyStack.pop();const id=historyStack[historyStack.length-1];document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");updateDots(id)}else go("home")}
+function updateDots(id){
+ const map={home:0,intro:0,reader:1,quiz1:2,quiz2:3,quiz3:4,complete:5,about:0};
+ document.querySelectorAll(".progress-dots span").forEach((d,i)=>d.classList.toggle("on",i===map[id]));
+}
+function selectStory(key){
+ currentStory=key;const s=stories[key];
+ document.getElementById("introArt").innerHTML=s.art;
+ document.getElementById("introTitle").textContent=s.title;
+ document.getElementById("introDescription").textContent=s.description;
+ go("intro");
+}
+function startReading(){pageIndex=0;document.getElementById("readerTitle").textContent=stories[currentStory].title;renderPage();go("reader")}
+function renderPage(){
+ const p=stories[currentStory].pages[pageIndex];
+ document.getElementById("pageHeading").textContent=p[0];
+ document.getElementById("pageText").innerHTML="<p>"+p[1]+"</p>";
+ document.getElementById("pageCount").textContent=`Página ${pageIndex+1} de ${stories[currentStory].pages.length}`;
+ document.getElementById("nextPageBtn").textContent=pageIndex===stories[currentStory].pages.length-1?"Terminar cuento →":"Siguiente →";
+}
+function nextPage(){if(pageIndex<stories[currentStory].pages.length-1){pageIndex++;renderPage()}else{go("quiz1");resetDrag()}}
+function previousPage(){if(pageIndex>0){pageIndex--;renderPage()}else go("intro")}
+function speakPage(){
+ if(!("speechSynthesis" in window)){toast("Tu navegador no permite escuchar el texto.");return}
+ window.speechSynthesis.cancel();
+ const p=stories[currentStory].pages[pageIndex];
+ const utterance=new SpeechSynthesisUtterance(p[0]+". "+p[1]);utterance.lang="es-ES";utterance.rate=.88;
+ window.speechSynthesis.speak(utterance);
+}
+let touchStartX=0;
+document.getElementById("readerPage").addEventListener("touchstart",e=>touchStartX=e.changedTouches[0].screenX,{passive:true});
+document.getElementById("readerPage").addEventListener("touchend",e=>{let dx=e.changedTouches[0].screenX-touchStartX;if(Math.abs(dx)>65){dx<0?nextPage():previousPage()}},{passive:true});
+document.getElementById("readerPage").addEventListener("keydown",e=>{if(e.key==="ArrowRight")nextPage();if(e.key==="ArrowLeft")previousPage()});
+function toggleSettings(){const p=document.getElementById("settingsPanel");p.classList.toggle("open");document.getElementById("settingsButton").setAttribute("aria-expanded",p.classList.contains("open"))}
+function setFontSize(v){document.documentElement.style.setProperty("--font-size",v+"px")}
+function setLineHeight(v){document.documentElement.style.setProperty("--line-height",v)}
+function setLetterSpacing(v){document.documentElement.style.setProperty("--letter-spacing",v+"em")}
+function toggleDyslexia(v){document.body.classList.toggle("dyslexia-mode",v);if(v){document.getElementById("fontRange").value=22;setFontSize(22);document.getElementById("spacingRange").value=2;setLineHeight(2);document.getElementById("letterRange").value=.04;setLetterSpacing(.04)}}
+function toggleContrast(v){document.body.classList.toggle("high-contrast",v)}
+function dragSentence(e){e.dataTransfer.setData("text/plain","sentence")}
+function allowDrop(e){e.preventDefault()}
+function dropSentence(e){e.preventDefault();dropped=true;const z=document.getElementById("dropZone");z.textContent="«La luna decidió bajar un poquito para verlo todo más de cerca». · Colocada";z.classList.add("filled")}
+function resetDrag(){dropped=false;const z=document.getElementById("dropZone");z.textContent="Suelta aquí la frase";z.classList.remove("filled");document.getElementById("dragFeedback").textContent=""}
+function checkDrag(){const f=document.getElementById("dragFeedback");if(!dropped){f.textContent="Primero arrastra la frase hasta el recuadro.";f.className="feedback error"}else{f.textContent="¡Bien hecho! La frase aparece después de que la luna decide acercarse al bosque.";f.className="feedback"}}
+function chooseMeaning(btn,correct){if(meaningAnswered)return;meaningAnswered=true;document.querySelectorAll("#meaningChoices .choice").forEach(b=>b.disabled=true);btn.classList.add(correct?"correct":"wrong");const f=document.getElementById("meaningFeedback");if(correct){f.textContent="¡Exacto! Una persona curiosa quiere descubrir y aprender cosas."}else{f.textContent="Casi. Fíjate: la luna se hace preguntas porque quiere descubrir algo.";f.className="feedback error";document.querySelectorAll("#meaningChoices .choice")[1].classList.add("correct")}}
+let sequence=["La luna vuelve al cielo y comprende que no tiene que tener prisa.","La luna quiere descubrir qué hay al otro lado del bosque.","La luna baja y conoce a un búho que la acompaña."];
+const correctSequence=[1,2,0];let selectedCard=0;
+function renderSequence(){const list=document.getElementById("sequenceList");list.innerHTML="";sequence.forEach((t,i)=>{const b=document.createElement("button");b.className="draggable"+(selectedCard===i?" selected":"");b.style.borderColor=selectedCard===i?"var(--teal-dark)":"var(--line)";b.innerHTML=`<span class="drag-handle">⠿</span><span>${t}</span>`;b.onclick=()=>{selectedCard=i;renderSequence()};list.appendChild(b)})}
+function moveSequence(dir){const n=selectedCard+dir;if(n<0||n>=sequence.length)return;[sequence[selectedCard],sequence[n]]=[sequence[n],sequence[selectedCard]];selectedCard=n;renderSequence()}
+function checkSequence(){const expected=["La luna quiere descubrir qué hay al otro lado del bosque.","La luna baja y conoce a un búho que la acompaña.","La luna vuelve al cielo y comprende que no tiene que tener prisa."];const ok=sequence.every((v,i)=>v===expected[i]);const f=document.getElementById("sequenceFeedback");f.textContent=ok?"¡Perfecto! Has identificado el inicio, el nudo y el desenlace.":"Todavía no está en orden. Piensa: ¿qué desea la luna al principio y qué aprende al final?";f.className=ok?"feedback":"feedback error"}
+function finishStory(){go("complete")}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500)}
+document.getElementById("dyslexiaToggle").addEventListener("change",e=>{if(e.target.checked)toast("Has activado una lectura con más espacio.")});
+renderSequence();
+</script>
 </body>
-
-
-
-
-
-
-
-
 </html>
